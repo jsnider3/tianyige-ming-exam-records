@@ -108,6 +108,14 @@ async function renderAbout() {
   const body = md.replace(/^---[\s\S]*?---\s*/, "");  // drop the Hugging Face front matter
   const div = el("div", { class: "about" });
   div.innerHTML = window.marked ? marked.parse(body) : `<pre>${body.replace(/[&<]/g, c => ({ "&": "&amp;", "<": "&lt;" })[c])}</pre>`;
+  // In-page links like [中文](#中文說明) would collide with the hash router, so scroll to the heading instead.
+  div.addEventListener("click", e => {
+    const a = e.target.closest('a[href^="#"]');
+    if (!a || a.getAttribute("href").startsWith("#/")) return;
+    e.preventDefault();
+    const target = decodeURIComponent(a.getAttribute("href").slice(1));
+    [...div.querySelectorAll("h1,h2,h3")].find(h => h.textContent.trim() === target)?.scrollIntoView();
+  });
   app.replaceChildren(div);
 }
 

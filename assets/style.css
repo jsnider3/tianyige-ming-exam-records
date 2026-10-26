@@ -38,10 +38,11 @@ td.title { font-family: var(--cjk); white-space: normal; }
 .page h3 { margin: 0 0 8px; font-size: 15px; display: flex; flex-wrap: wrap; gap: 6px 14px; align-items: baseline; }
 .page h3 .leaf { font-family: var(--cjk); color: var(--muted); font-weight: normal; }
 .cols { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 12px; }
+.col { min-width: 0; }
 .col h4 { margin: 0 0 4px; font-size: 12px; text-transform: uppercase; letter-spacing: .04em; color: var(--muted); }
 .zh { font-family: var(--cjk); font-size: 17px; white-space: pre-wrap; word-break: break-all; margin: 0; }
-.zh.vertical { writing-mode: vertical-rl; max-height: 32em; overflow-x: auto; line-height: 1.9; }
-.en { white-space: pre-wrap; margin: 0; }
+.zh.vertical { writing-mode: vertical-rl; max-width: 100%; max-height: 32em; overflow-x: auto; line-height: 1.9; }
+.en { font: inherit; white-space: pre-wrap; margin: 0; }
 details { margin-top: 8px; font-size: 14px; }
 .blank { color: var(--muted); font-style: italic; }
 .about { max-width: 820px; }
