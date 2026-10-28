@@ -51,7 +51,8 @@ async function renderList() {
     el("option", { value: "" }, label), ...options.map(([v, t]) => { const o = el("option", { value: v }, t); if (state[key] === v) o.selected = true; return o; }));
   app.replaceChildren(
     el("p", {}, `312 printed records of Ming civil-service examinations (1371–1684): ${totalPages.toLocaleString()} pages of text, `,
-      `${totalTr.toLocaleString()} translated into English so far. Choose a record to read it page by page alongside the scans.`),
+      totalTr >= totalPages ? "all punctuated and translated into English. " : `${totalTr.toLocaleString()} translated into English so far. `,
+      "Choose a record to read it page by page alongside the scans."),
     el("div", { class: "filters" },
       input("search", "q", { placeholder: "Search title, province, reign…" }),
       select("level", "All levels", [["provincial", "Provincial (鄉試)"], ["metropolitan", "Metropolitan (會試)"], ["palace", "Palace (殿試)"]]),
