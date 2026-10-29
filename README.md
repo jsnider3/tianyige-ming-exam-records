@@ -3,7 +3,218 @@ license: cc0-1.0
 language:
 - lzh
 - zh
-pretty_name: Tianyige Ming Examination Records (OCR)
+- en
+pretty_name: Tianyige Ming Examination Records
+task_categories:
+- translation
+- text-generation
+configs:
+- config_name: pages
+  default: true
+  data_files:
+  - split: train
+    path: pages/*.jsonl
+- config_name: documents
+  data_files:
+  - split: train
+    path: documents/*.jsonl
+- config_name: questions
+  data_files:
+  - split: train
+    path: tables/questions.jsonl
+- config_name: graduates
+  data_files:
+  - split: train
+    path: tables/graduates.jsonl
+- config_name: volumes
+  data_files:
+  - split: train
+    path: tables/volumes.jsonl
+dataset_info:
+- config_name: pages
+  features:
+  - name: id
+    dtype: string
+  - name: tianyige_id
+    dtype: string
+  - name: title
+    dtype: string
+  - name: western_year
+    dtype: int64
+  - name: reign_era
+    dtype: string
+  - name: reign_year
+    dtype: int64
+  - name: exam_level
+    dtype: string
+  - name: military
+    dtype: bool
+  - name: province
+    dtype: string
+  - name: province_en
+    dtype: string
+  - name: page
+    dtype: int64
+  - name: scan_url
+    dtype: string
+  - name: text
+    dtype: string
+  - name: banxin
+    sequence: string
+  - name: ocr_model
+    dtype: string
+  - name: blank
+    dtype: bool
+  - name: has_examiner_comments
+    dtype: bool
+  - name: chatter_stripped
+    dtype: bool
+  - name: alt_text
+    dtype: string
+  - name: alt_ocr_model
+    dtype: string
+  - name: agreement
+    dtype: float64
+  - name: punctuated
+    dtype: string
+  - name: translation_en
+    dtype: string
+  - name: translation_model
+    dtype: string
+- config_name: documents
+  features:
+  - name: id
+    dtype: string
+  - name: tianyige_id
+    dtype: string
+  - name: title
+    dtype: string
+  - name: western_year
+    dtype: int64
+  - name: exam_level
+    dtype: string
+  - name: province_en
+    dtype: string
+  - name: type
+    dtype: string
+  - name: label
+    dtype: string
+  - name: session
+    dtype: int64
+  - name: subject
+    dtype: string
+  - name: number
+    dtype: int64
+  - name: name
+    dtype: string
+  - name: rank
+    dtype: int64
+  - name: candidate
+    dtype: string
+  - name: header
+    dtype: string
+  - name: comments
+    list:
+    - name: role
+      dtype: string
+    - name: name
+      dtype: string
+    - name: office
+      dtype: string
+    - name: text
+      dtype: string
+  - name: question_id
+    dtype: string
+  - name: text
+    dtype: string
+  - name: start
+    dtype: string
+  - name: end
+    dtype: string
+  - name: pages
+    sequence: int64
+  - name: scan_url
+    dtype: string
+  - name: segmenter
+    dtype: string
+- config_name: questions
+  features:
+  - name: id
+    dtype: string
+  - name: year
+    dtype: int64
+  - name: record
+    dtype: string
+  - name: level
+    dtype: string
+  - name: province
+    dtype: string
+  - name: session
+    dtype: int64
+  - name: subject
+    dtype: string
+  - name: number
+    dtype: int64
+  - name: text
+    dtype: string
+- config_name: graduates
+  features:
+  - name: id
+    dtype: string
+  - name: year
+    dtype: int64
+  - name: record
+    dtype: string
+  - name: level
+    dtype: string
+  - name: province
+    dtype: string
+  - name: tier
+    dtype: string
+  - name: rank
+    dtype: int64
+  - name: name
+    dtype: string
+  - name: entry
+    dtype: string
+- config_name: volumes
+  features:
+  - name: volume
+    dtype: string
+  - name: tianyige_id
+    dtype: string
+  - name: title
+    dtype: string
+  - name: dynasty
+    dtype: string
+  - name: reign_era
+    dtype: string
+  - name: reign_era_pinyin
+    dtype: string
+  - name: reign_year
+    dtype: int64
+  - name: western_year
+    dtype: int64
+  - name: exam_level
+    dtype: string
+  - name: military
+    dtype: bool
+  - name: province
+    dtype: string
+  - name: province_en
+    dtype: string
+  - name: edition_notes
+    dtype: string
+  - name: pages
+    dtype: int64
+  - name: commons_page
+    dtype: string
+  - name: source_url
+    dtype: string
+  - name: sha1
+    dtype: string
+  - name: local_path
+    dtype: string
 tags:
 - classical-chinese
 - ming-dynasty
@@ -39,8 +250,24 @@ The set includes 7 military provincial examination records (武舉鄉試錄) and
 - `questions.tsv`: every examination question in the collection, with year, record, level, province, session, subject and number.
 - `graduates.tsv`: every graduate listed in the collection, with year, record, level, province, tier, rank, name and the full entry as printed (native place, school, classic studied; for palace rosters also family and earlier ranks).
 - `volumes.tsv`: one row per record, with title, reign era and year, Western year, examination level, province, edition notes, page count, Wikimedia Commons link and SHA-1 of the source PDF. `volumes.json` holds the same metadata plus per-record page counts, for the viewer.
+- `tables/`: the questions, graduates and volumes tables again, as JSON Lines with typed fields. The Hugging Face loader and viewer use these copies.
 - `text/`: one plain-text file per record, named `<year>_<title>_<tianyige_id>.txt`, with page markers. This is the easiest way to read a record in a text editor.
-- `index.html` and `assets/`: a browser for the dataset. It lists the records with filters, and shows each record page by page: transcription (optionally in vertical columns, as printed), punctuated text, English translation and a link to the scan. To use it locally, run `python3 -m http.server 8000` in this folder and open http://localhost:8000. Opening `index.html` directly from disk won't work, because browsers block it from loading the data files.
+- `index.html` and `assets/`: a browser for the dataset. It lists the records with filters. Each record can be viewed page by page, with the transcription (optionally in vertical columns, as printed), punctuated text, English translation and a link to the scan. It can also be viewed as documents: questions, model answers with the examiners' comments, and graduates. To use it locally, run `python3 -m http.server 8000` in this folder and open http://localhost:8000. Opening `index.html` directly from disk won't work, because browsers block it from loading the data files.
+
+### Loading with Python
+
+```python
+from datasets import load_dataset
+
+repo = "<user>/tianyige-ming-exam-records"   # Hugging Face dataset id
+pages = load_dataset(repo, "pages", split="train")          # 40,461 pages: text, punctuation, translation
+docs = load_dataset(repo, "documents", split="train")       # 81,298 documents
+answers = docs.filter(lambda d: d["type"] == "model_answer")  # 7,348 model answers with comments
+questions = load_dataset(repo, "questions", split="train")  # 12,921 questions
+graduates = load_dataset(repo, "graduates", split="train")  # 49,378 graduates
+```
+
+The files are plain JSON Lines and TSV, so they can also be read without the `datasets` library.
 
 ### Page fields
 
@@ -149,7 +376,7 @@ The transcriptions and metadata are released under **CC0 1.0** (public domain de
 - `pages/<天一閣編號>.jsonl`：每錄一個文件，逐頁記錄，含原圖鏈接 `scan_url`、識讀文本、版心文字，以及標點文本 `punctuated` 與英譯 `translation_en`。
 - `index.html`：瀏覽界面，可逐頁對照錄文（可切換為直排）、標點文本、英譯與原圖。本地使用時，在此目錄運行 `python3 -m http.server 8000`，再打開 http://localhost:8000 。
 - `documents/<天一閣編號>.jsonl`：按篇切分的文本，包括序、官員名錄、試題、中式名錄各條，以及程文（附考官批語，並對應所答試題）。
-- `questions.tsv`：全部試題一覽（12,921道）；`graduates.tsv`：全部中式者一覽（49,378人），含名次、甲第、姓名及原文。
+- `questions.tsv`：全部試題一覽（12,921道）；`graduates.tsv`：全部中式者一覽（49,378人），含名次、甲第、姓名及原文。`tables/` 目錄另有這些表格的 JSON Lines 版本，供 Hugging Face 讀取。
 - `volumes.tsv`：各錄元數據（年號、公元年、考試級別、省份、版本等）。
 - `text/`：每錄一個純文本文件，便於閱讀。
 
