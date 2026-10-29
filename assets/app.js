@@ -91,16 +91,60 @@ async function renderVolume(id) {
         el("p", { class: "muted", style: "font-size:12px;margin:6px 0 0" }, `OCR: ${p.ocr_model}` + (p.translation_model ? ` · translation: ${p.translation_model}` : "")));
     }));
   };
+  const docsView = el("div");
+  let docs = null;
+  const TYPE_NAMES = { title: "Title", heading: "Heading", preface: "Preface 序", postface: "Postface 後序", edict: "Edict",
+    officials: "Officials", procedure: "Procedure", question: "Question", graduate_entry: "Graduate", model_answer: "Model answer",
+    other: "Other" };
+  const showDocs = async () => {
+    if (!docs) {
+      const r = await fetch(`documents/${id}.jsonl`);
+      docs = r.ok ? (await r.text()).trim().split("\n").map(l => JSON.parse(l)) : [];
+    }
+    if (!docs.length) { docsView.replaceChildren(el("p", { class: "blank" }, "This record hasn't been split into documents yet.")); return; }
+    const byId = Object.fromEntries(docs.map(d => [d.id, d]));
+    const pageLinks = d => el("span", { class: "muted" }, ` pp. ${d.pages[0]}${d.pages.length > 1 ? "–" + d.pages[d.pages.length - 1] : ""} `,
+      el("a", { href: d.scan_url, target: "_blank", rel: "noopener" }, "scan ↗"));
+    const grads = docs.filter(d => d.type === "graduate_entry");
+    const rest = docs.filter(d => d.type !== "graduate_entry");
+    const card = d => {
+      const tag = [d.subject, d.number != null ? `#${d.number}` : null, d.session ? `session ${d.session}` : null].filter(Boolean).join(" · ");
+      const head = el("h3", {}, TYPE_NAMES[d.type] || d.type, tag ? el("span", { class: "leaf" }, tag) : null,
+        d.label ? el("span", { class: "leaf" }, d.label) : null, pageLinks(d));
+      if (d.type !== "model_answer") return el("div", { class: "page", id: d.id }, head, el("pre", { class: "zh" }, d.text));
+      const q = d.question_id && byId[d.question_id];
+      return el("div", { class: "page", id: d.id }, head,
+        el("p", {}, d.candidate ? `Candidate: ${d.candidate}` : "Candidate not named", d.rank ? ` (rank ${d.rank})` : "",
+          q ? el("span", {}, " · answers ", el("a", { href: `#/v/${id}`, onclick: e => { e.preventDefault(); document.getElementById(q.id)?.scrollIntoView(); } }, q.text.slice(0, 24) + "…")) : null),
+        d.comments.length ? el("div", {}, el("h4", {}, "Examiners' comments"),
+          ...d.comments.map(c => el("p", { class: "zh", style: "margin:2px 0" }, el("b", {}, `${c.role || ""} ${c.name || ""} ${c.office || ""}　`), c.text))) : null,
+        el("h4", {}, "Essay"), el("pre", { class: "zh" }, d.text || "(no essay text)"));
+    };
+    docsView.replaceChildren(
+      el("p", { class: "muted" }, `${docs.length} documents: ${rest.filter(d => d.type === "question").length} questions, ` +
+        `${rest.filter(d => d.type === "model_answer").length} model answers, ${grads.length} graduates.`),
+      ...rest.map(card),
+      grads.length ? el("details", {}, el("summary", {}, `Graduates (${grads.length})`),
+        el("div", { class: "table-wrap" }, el("table", {}, el("thead", {}, el("tr", {}, ...["Tier", "Rank", "Name", "Entry"].map(h => el("th", {}, h)))),
+          el("tbody", {}, ...grads.map(g => el("tr", {}, el("td", {}, g.label || ""), el("td", {}, g.rank ?? ""), el("td", { class: "title" }, g.name || ""),
+            el("td", { class: "title" }, g.text))))))) : null);
+  };
+  const mode = el("select", { onchange: e => { const docsMode = e.target.value === "docs"; list.hidden = docsMode; docsView.hidden = !docsMode;
+      pageOpts.style.display = docsMode ? "none" : "flex"; if (docsMode) showDocs(); } },
+    el("option", { value: "pages" }, "View: pages"), el("option", { value: "docs" }, "View: documents"));
+  docsView.hidden = true;
   const toggle = (key, label) => { const c = el("input", { type: "checkbox", onchange: e => { opts[key] = e.target.checked; draw(); } }); c.checked = opts[key]; return el("label", {}, c, ` ${label}`); };
   const jump = el("input", { type: "number", min: 1, max: pages.length, placeholder: "Go to page", style: "width:110px",
     onchange: e => document.getElementById(`p${e.target.value}`)?.scrollIntoView() });
+  const pageOpts = el("span", { style: "display:flex;flex-wrap:wrap;gap:12px;align-items:center" },
+    toggle("showRaw", "Transcription"), toggle("showPunct", "Punctuated"), toggle("showEn", "English"),
+    toggle("vertical", "Vertical columns, as printed"), jump);
   app.replaceChildren(
     el("div", { class: "vol-head" }, el("p", {}, el("a", { href: "#/" }, "← All records")), el("h1", {}, v.title),
       el("p", { class: "meta" }, `${v.western_year} · ${v.reign_era_pinyin} ${v.reign_year} · ${v.exam_level}` + (v.province_en ? ` · ${v.province_en}` : "") +
         ` · ${v.pages} pages · Tianyige ${v.tianyige_id} · ${v.edition_notes} · `, el("a", { href: v.commons_page, target: "_blank", rel: "noopener" }, "Scans on Wikimedia Commons ↗"))),
-    el("div", { class: "toolbar" }, toggle("showRaw", "Transcription"), toggle("showPunct", "Punctuated"), toggle("showEn", "English"),
-      toggle("vertical", "Vertical columns, as printed"), jump),
-    list);
+    el("div", { class: "toolbar" }, mode, pageOpts),
+    list, docsView);
   draw();
 }
 
