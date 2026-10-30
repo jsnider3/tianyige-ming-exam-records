@@ -231,6 +231,8 @@ size_categories:
 
 [![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23817594.svg)](https://doi.org/10.5281/zenodo.23817594)
 
+**Browse online:** [joshuasnider.com/tianyige-ming-exam-records](https://www.joshuasnider.com/tianyige-ming-exam-records/) · **Hugging Face:** [jsnider3/tianyige-ming-exam-records](https://huggingface.co/datasets/jsnider3/tianyige-ming-exam-records) · **GitHub:** [jsnider3/tianyige-ming-exam-records](https://github.com/jsnider3/tianyige-ming-exam-records) · **Zenodo:** [10.5281/zenodo.23817594](https://doi.org/10.5281/zenodo.23817594)
+
 **English** · [中文](#中文說明)
 
 Machine-read full text of **312 printed examination records** (科舉錄) from the Ming dynasty civil-service examinations, digitized by the **Tianyi Pavilion Museum** (天一閣博物院, Ningbo). It covers **40,461 page images**, about **9.9 million characters**, from **1371 to 1684**. Every page with text also has machine-added punctuation and an **English translation**. Each record is also split into its logical documents: prefaces, lists of officials, questions, graduates, and model answers with the examiners' comments. Tables list all **12,921 questions** and **49,378 graduates**.
@@ -261,7 +263,7 @@ The set includes 7 military provincial examination records (武舉鄉試錄) and
 ```python
 from datasets import load_dataset
 
-repo = "<user>/tianyige-ming-exam-records"   # Hugging Face dataset id
+repo = "jsnider3/tianyige-ming-exam-records"
 pages = load_dataset(repo, "pages", split="train")          # 40,461 pages: text, punctuation, translation
 docs = load_dataset(repo, "documents", split="train")       # 81,298 documents
 answers = docs.filter(lambda d: d["type"] == "model_answer")  # 7,348 model answers with comments
@@ -373,6 +375,8 @@ Compiled by Joshua Snider ([ORCID 0009-0004-2574-250X](https://orcid.org/0009-00
 ---
 
 ## 中文說明
+
+**線上瀏覽**：[joshuasnider.com/tianyige-ming-exam-records](https://www.joshuasnider.com/tianyige-ming-exam-records/)　**引用**：[10.5281/zenodo.23817594](https://doi.org/10.5281/zenodo.23817594)
 
 本數據集為**天一閣博物院**所藏明代科舉錄的機器識讀全文，並附機器標點及**英文翻譯**。共收**312種**，**40,461頁**影像，約**990萬字**，時間跨度為**1371至1684年**。其中鄉試錄236種、會試錄37種、進士登科錄39種，另含武舉鄉試錄7種及清康熙二十三年四川鄉試錄1種。
 
