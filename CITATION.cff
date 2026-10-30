@@ -11,6 +11,7 @@ abstract: >-
 authors:
   - family-names: Snider
     given-names: Joshua
+    orcid: "https://orcid.org/0009-0004-2574-250X"
 version: "1.0"
 date-released: 2026-10-29
 license: CC0-1.0

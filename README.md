@@ -354,6 +354,8 @@ The transcriptions and metadata are released under **CC0 1.0** (public domain de
 
 ## Citation
 
+Compiled by Joshua Snider ([ORCID 0009-0004-2574-250X](https://orcid.org/0009-0004-2574-250X)).
+
 ```
 @dataset{tianyige_ming_exam_ocr,
   title  = {Tianyige Ming Examination Records: Full Text and English Translation},
