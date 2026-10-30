@@ -12,6 +12,14 @@ authors:
   - family-names: Snider
     given-names: Joshua
     orcid: "https://orcid.org/0009-0004-2574-250X"
+doi: 10.5281/zenodo.23817594
+identifiers:
+  - type: doi
+    value: 10.5281/zenodo.23817594
+    description: Concept DOI (all versions, resolves to the latest)
+  - type: doi
+    value: 10.5281/zenodo.23817595
+    description: DOI of the first Zenodo release
 version: "1.0"
 date-released: 2026-10-29
 license: CC0-1.0

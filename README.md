@@ -229,6 +229,8 @@ size_categories:
 # Tianyige Ming Examination Records — full text and English translation
 # 天一閣藏明代科舉錄 全文錄文及英譯
 
+[![DOI](https://zenodo.org/badge/DOI/10.5281/zenodo.23817594.svg)](https://doi.org/10.5281/zenodo.23817594)
+
 **English** · [中文](#中文說明)
 
 Machine-read full text of **312 printed examination records** (科舉錄) from the Ming dynasty civil-service examinations, digitized by the **Tianyi Pavilion Museum** (天一閣博物院, Ningbo). It covers **40,461 page images**, about **9.9 million characters**, from **1371 to 1684**. Every page with text also has machine-added punctuation and an **English translation**. Each record is also split into its logical documents: prefaces, lists of officials, questions, graduates, and model answers with the examiners' comments. Tables list all **12,921 questions** and **49,378 graduates**.
@@ -354,15 +356,17 @@ The transcriptions and metadata are released under **CC0 1.0** (public domain de
 
 ## Citation
 
-Compiled by Joshua Snider ([ORCID 0009-0004-2574-250X](https://orcid.org/0009-0004-2574-250X)).
+Compiled by Joshua Snider ([ORCID 0009-0004-2574-250X](https://orcid.org/0009-0004-2574-250X)). Archived on Zenodo: [10.5281/zenodo.23817594](https://doi.org/10.5281/zenodo.23817594) always resolves to the latest version. The first release is [10.5281/zenodo.23817595](https://doi.org/10.5281/zenodo.23817595).
 
 ```
 @dataset{tianyige_ming_exam_ocr,
-  title  = {Tianyige Ming Examination Records: Full Text and English Translation},
-  author = {Snider, Joshua},
-  year   = {2026},
-  note   = {Machine transcription, punctuation and English translation of 312 Ming examination records digitized by the Tianyi Pavilion Museum},
-  url    = {<url>}
+  title     = {Tianyige Ming Examination Records: Full Text and English Translation},
+  author    = {Snider, Joshua},
+  year      = {2026},
+  publisher = {Zenodo},
+  doi       = {10.5281/zenodo.23817594},
+  url       = {https://doi.org/10.5281/zenodo.23817594},
+  note      = {Machine transcription, punctuation and English translation of 312 Ming examination records digitized by the Tianyi Pavilion Museum}
 }
 ```
 
