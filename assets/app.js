@@ -158,8 +158,8 @@ async function renderAbout() {
     const a = e.target.closest('a[href^="#"]');
     if (!a || a.getAttribute("href").startsWith("#/")) return;
     e.preventDefault();
-    const target = decodeURIComponent(a.getAttribute("href").slice(1));
-    [...div.querySelectorAll("h1,h2,h3")].find(h => h.textContent.trim() === target)?.scrollIntoView();
+    const target = decodeURIComponent(a.getAttribute("href").slice(1)).toLowerCase();
+    [...div.querySelectorAll("h1,h2,h3")].find(h => h.textContent.trim().toLowerCase() === target)?.scrollIntoView();
   });
   app.replaceChildren(div);
 }
